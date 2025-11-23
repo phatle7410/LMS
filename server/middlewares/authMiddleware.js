@@ -1,5 +1,18 @@
 import { clerkClient } from "@clerk/express";
 
+
+// Protect all authenticated users
+export const authMiddleware = (req, res, next) => {
+  try {
+    if (!req.auth || !req.auth.userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+    next();
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 //Middleware (protect routes cho educator)
  export const protectEducator = async (req, res, next)=> {
     try {
