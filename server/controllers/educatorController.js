@@ -1,6 +1,8 @@
-import { clerkClient } from "@clerk/express";
+import { clerkClient} from "@clerk/express";
 import Course from "../models/Course.js";
 import { v2 as cloudinary} from 'cloudinary';
+import User from "../models/User.js";
+
 
 
 //update thành người dạy
@@ -46,3 +48,52 @@ export const addCourse = async (req, res)=> {
         res.json({ success: false, message: error.message })
     }
 }
+
+// Lấy Khóa Học Của Người Dạy
+
+export const getEducatorCourses = async (req, res)=> {
+    try {
+        const educator = req.auth.userId
+
+        const courses = await Course.find({educator})
+        res.json({ success: true, courses })
+    } catch (error) {
+        res.json({ success: false, message: error.message })
+    }
+}
+
+// lấy data dashboard của educator(enrolled students, total courses)
+
+export const educatorDashboardData = async () => {
+    try {
+        const educator = req.auth.userId;
+        const courses = await Course.find({educator});
+        const totalCourses = courses.length;
+
+        const courseIds = courses.map(course => course._id);
+
+// thu thập tất cả học sinh đã đăng ký từ các khóa học của người dạy
+        const enrolledStudentsData = [];
+        for(const course of courses){
+            const students = await User.find({
+                 _id: { $in: course.enrolledStudents } 
+                }, 'name imageUrl');
+
+                students.forEach(student => {
+                    enrolledStudentsData.push({
+                        courseTitle: course.courseTitle,
+                        student
+                    })
+                });
+        }
+
+        res.json({ success: true, dashboardData: {
+            enrolledStudentsData, totalCourses
+        } });
+
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+}
+
+//
