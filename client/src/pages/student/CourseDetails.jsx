@@ -7,6 +7,9 @@ import { assets } from '../../assets/assets'
 import humanizeDuration from 'humanize-duration'
 import Footer from '../../compoments/student/Footer'
 import Youtube from 'react-youtube'
+import { toast } from 'react-toastify'
+import axios from 'axios'
+
 const CourseDetails = () => { 
 
   const {id} = useParams()
@@ -16,16 +19,68 @@ const CourseDetails = () => {
   const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false)
   const [playerData, setPlayerData] = useState(null)
 
-  const {allCourses, calculateRating, calculateNoOfLectures,  calculateCourseDuration, calculateChapterTime} = useContext(AppContext)
+  const {allCourses, calculateRating, calculateNoOfLectures,  calculateCourseDuration, calculateChapterTime, backendUrl, userData,setUserData, getToken} = useContext(AppContext)
 
   const fetchCourseData = async() =>{
-    const findCourse = allCourses.find(course => course._id === id)
-    setCourseData(findCourse);
+    try {
+      const {data} = await axios.get(backendUrl + '/api/course/' + id)
+
+      if(data.success){
+        setCourseData(data.courseData)
+      }else{
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
+
+  const enrollCourse = async() =>{
+    try {
+      if(!userData){
+        return toast.warn('Đăng Nhập Để Đăng Ký Bài Học')
+      }
+      if(isAlreadyEnrolled){
+        return toast.warn('Bạn Đã Đăng Ký Bài Học Này')
+      }
+
+      const token = await getToken();
+
+      const { data } = await axios.post(
+      `${backendUrl}/api/enroll/${courseData._id}`, // <--- dùng đúng route
+      {}, 
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+      if(data.success){
+      toast.success('Đăng ký thành công!')
+      setIsAlreadyEnrolled(true)
+       
+      setUserData(prev => ({
+        ...prev,
+        enrolledCourses: [...prev.enrolledCourses, courseData._id]
+      }));
+      }else{
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+    
+      
 
   useEffect(()=>{
     fetchCourseData()
-  },[allCourses])
+  },[])
+
+
+  useEffect(()=>{
+    if(userData && courseData){
+      setIsAlreadyEnrolled(userData.enrolledCourses.includes(courseData._id))
+    }
+  },[userData, courseData])
 
   const toggleSection = (index) => {
     setOpenSections((prev) => ({
@@ -45,8 +100,7 @@ const CourseDetails = () => {
     {/* colunn trai */}
     <div className='max-w-xl z-10 text-gray-500'>
       <h1 className='md:text-course-details-heading-large text-course-details-heading-small font-semibold text-gray-800'>{courseData.courseTitle}</h1>
-      <p className='pt-4 md:text-base text-sm' 
-      dangerouslySetInnerHTML={{__html: courseData.courseDescription.slice(0,200)}}></p>
+      
 
       {/* rì viu and đánh giá */}
 
@@ -63,10 +117,10 @@ const CourseDetails = () => {
               </div>
 
 
-              <p className='text-sm'>Bài Giảng bởi <span className='text-blue-600 underline'>PhatChia</span></p>
+              <p className='text-sm'>Bài Giảng bởi <span className='text-blue-600 underline'>{courseData.educator.name}</span></p>
 
               <div className='pt-8 text-gray-800'>
-                <h2 className='text-xl font-semibold'>Nội Dung Bài Học</h2>
+                <h2 className='text-xl font-semibold'>Thông Tin Bài Học</h2>
                 <div className='pt-5'>
                   {courseData.courseContent.map((chapter, index) => (
                       <div key={index} className='border border-gray-300 bg-white mb-2 rounded'> 
@@ -74,9 +128,9 @@ const CourseDetails = () => {
                           <div className='flex items-center gap-2'>
                             <img className={`transform transition-transform ${openSections[index] ? 'rotate-180' : ''}`} 
                             src={assets.down_arrow_icon} alt="arrow icon" />
-                            <p className='font-medium md:Text-base text-sm'>{chapter.chapterTitle}</p>
+                            <p className='font-medium md:Text-base text-sm'> {chapter.chapterTitle} - </p>
                           </div>
-                          <p className='text-sm md:text-default'>{chapter.chapterContent.length} Bài Giảng -   {calculateChapterTime(chapter)}</p>
+                          <p className='text-sm md:text-default'> {chapter.chapterContent.length} Bài Giảng -   {calculateChapterTime(chapter)}</p>
                         </div>
 
                         <div className={`overflow-hidden trasition-all duration-300 ${openSections[index] ? 'max-h-96' : 'max-h-0'}`}>
@@ -146,7 +200,7 @@ const CourseDetails = () => {
               </div>
 
         </div>
-        <button className='md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium'>{isAlreadyEnrolled ? 'Đã Đăng Ký' : 'Đăng Ký'}</button>
+        <button onClick={enrollCourse} className='md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium'>{isAlreadyEnrolled ? 'Đã Đăng Ký' : 'Đăng Ký'}</button>
         
         <div className='p-5'>
           <p className='md:text-xl text-lg  font-medium text-gray-800'>Trong Bài Học Có Những Gì?</p>

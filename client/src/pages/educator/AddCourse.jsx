@@ -1,9 +1,14 @@
-import React, { use, useEffect, useRef, useState } from 'react'
+import React, { use, useContext, useEffect, useRef, useState } from 'react'
 import uniqid from 'uniqid';
 import Quill from 'quill';
 import { assets } from '../../assets/assets';
+import { AppContext } from '../../context/AppContext';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const AddCourse = () => {
+
+  const { backendUrl, getToken } = useContext(AppContext)
 
   const quillRef = useRef(null);
   const editorRef = useRef(null);
@@ -74,6 +79,7 @@ const AddCourse = () => {
         chapters.map((chapter) => {
           if (chapter.chapterId === currentChapterId) {
             const newLecture = {
+              lectureId: uniqid(),
               ...lectureDetails,
               lectureOrder: chapter.chapterContent.length > 0 ? chapter.chapterContent.slice(-1)[0].lectureOrder + 1 : 1,
             };
@@ -91,7 +97,40 @@ const AddCourse = () => {
     };
 
     const handleSubmit = async (e) => {
-      e.preventDefault()
+      try {
+        e.preventDefault()
+        if(!image){
+          toast.error('Chưa Chọn Ảnh Thumbnail ')
+        }
+
+        const courseData = {
+          courseTitle,
+          courseDescription: quillRef.current.root.innerHTML,
+          courseContent: chapters,
+        }
+
+        const formData = new FormData()
+        formData.append('courseData', JSON.stringify(courseData))
+        formData.append('image', image)
+
+        const token = await getToken()
+        const { data } = await axios.post(backendUrl + '/api/educator/add-course', formData, { headers: { Authorization: `Bearer ${token}` } })
+
+        if (data.success){
+          toast.success(data.message)
+          setCourseTitle('')
+          setImage(null)
+          setChapters([])
+          quillRef.current.root.innerHTML = ""
+        }else{
+          toast.error(data.message)
+        }
+
+      } catch (error) {
+          toast.error(error.message)
+
+      }
+      
     };
 
 
@@ -108,7 +147,7 @@ const AddCourse = () => {
 
   return (
     <div className='h-screen overlow-scroll flex flex-col items-start justify-between md:p-8 md:pb-0 p-4 pt-8 pb-0'>
-      <form onClick={handleSubmit} className='flex flex-col gap-4 max-w-md w-full text-gray-500'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4 max-w-md w-full text-gray-500'>
         <div className='flex flex-col gap-1'>
           <p>Tên Khóa Học</p>
           <input onChange={e => setCourseTitle(e.target.value)} value={courseTitle} type='text' placeholder='Type here' className='outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500' required />

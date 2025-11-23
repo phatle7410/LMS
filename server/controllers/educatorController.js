@@ -64,7 +64,7 @@ export const getEducatorCourses = async (req, res)=> {
 
 // lấy data dashboard của educator(enrolled students, total courses)
 
-export const educatorDashboardData = async () => {
+export const educatorDashboardData = async (req, res) => {
     try {
         const educator = req.auth.userId;
         const courses = await Course.find({educator});
@@ -76,8 +76,8 @@ export const educatorDashboardData = async () => {
         const enrolledStudentsData = [];
         for(const course of courses){
             const students = await User.find({
-                 _id: { $in: course.enrolledStudents } 
-                }, 'name imageUrl');
+                 _id: {$in: course.enrolledStudents} 
+                }, 'name imageUrl');    
 
                 students.forEach(student => {
                     enrolledStudentsData.push({
@@ -96,4 +96,39 @@ export const educatorDashboardData = async () => {
     }
 }
 
-//
+export const getEnrolledStudents = async (req, res) => {
+  try {
+    const educator = req.auth.userId;
+
+    // Lấy danh sách khóa học của educator
+    const courses = await Course.find({ educator });
+
+    const enrolledStudentsData = [];
+
+    // Lặp từng khóa học
+    for (const course of courses) {
+      // Tìm tất cả học sinh trong enrolledStudents
+      const students = await User.find(
+        { _id: { $in: course.enrolledStudents } },
+        "name imageUrl"
+      );
+
+      students.forEach(student => {
+        enrolledStudentsData.push({
+          student,
+          courseTitle: course.courseTitle,
+          joinDate: course.updatedAt
+
+        });
+      });
+    }
+
+    res.json({
+      success: true,
+      enrolledStudents: enrolledStudentsData
+    });
+
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};

@@ -1,5 +1,6 @@
 import Course from "../models/Course.js";
 import User from "../models/User.js";
+import CourseProgress from "../models/CourseProgress.js";
 
 export const getUserData = async (req, res) => {
     try {
@@ -35,8 +36,8 @@ export const updateUserCourseProgress = async (req, res) => {
         const { courseId, lectureId } = req.body
         const progressData = await CourseProgress.findOne({ userId, courseId })
 
-        if (!progressData) {
-            if(!progressData.lectureCompleted.includes(lectureId)){
+        if (progressData) {
+            if(progressData.lectureCompleted.includes(lectureId)){
                 return res.json({success: true, message: 'Bài Học Đã Hoàn Thành'})
             }
 
