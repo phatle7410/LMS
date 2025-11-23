@@ -19,7 +19,7 @@ export const getCourseId = async (req,res)=>{
     try {
         const courseData = await Course.findById(id).populate({path: 'educator'})
 
-        
+        res.json({ success: true, courseData })
     }catch (error) {
         res.json({ success: false, message: error.message })
     }
