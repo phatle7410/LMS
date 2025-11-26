@@ -1,5 +1,6 @@
 import React from 'react'
 import { assets } from '../../assets/assets'
+import { Link } from 'react-router-dom'
 
 const CallToAction = () => {
   return (
@@ -7,7 +8,9 @@ const CallToAction = () => {
       <h1 className='text-xl md:Text-4xl text-gray-800 font-semibold'>Học Mọi Lúc Mọi Nơi</h1>
       <p className='text-gray-500 sm:text-sm'>Học tập linh hoạt, bất cứ khi nào, ở bất cứ đâu.</p>
       <div className='flex items-center font-medium gap-6 mt-4'>
+        <Link to={'/course-list'} onClick={()=> scrollTo(0,0)}>
         <button className='px-10 py-3 rounded-md text-white bg-blue-600'>Bắt Đầu Học</button>
+        </Link>
         <button className='flex items-center gap-2'>Tìm Hiểu Thêm <img src={assets.arrow_icon} alt="arrow_icon" /></button>
 
       </div>
