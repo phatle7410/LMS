@@ -50,10 +50,15 @@ const Navbar = () => {
             { user && <>
               <button onClick={becomeEducator}>{isEducator ? 'Bảng Giảng Viên' : 'Đăng ký Giảng Viên'}</button> | 
             <Link to='/my-enrollments'>Các Bài Học Của Tôi</Link>
+
+            
             </>
             }
-
+              
         </div>
+        <Link to={'/game'} onClick={()=> scrollTo(0,0)}>
+                      <button className='px-10 py-3 rounded-md text-white bg-blue-500'>Giải Trí</button>
+                      </Link>
         { user ? <UserButton/> :
 
         <button onClick={() => openSignIn()}className='bg-blue-600 text-white px-5 py-2 rounded-full'>Đăng Ký Tài Khoản</button>}
@@ -67,6 +72,12 @@ const Navbar = () => {
             </>
             }
         </div>
+<Link to="/game">
+      <button className='px-3 py-2 rounded-md text-white bg-blue-500 text-sm'>
+        Giải Trí
+      </button>
+   </Link>
+        
         {
           user ? <UserButton/> : <button onClick={()=> openSignIn()}><img src={assets.user_icon} alt="" /></button>
         }
