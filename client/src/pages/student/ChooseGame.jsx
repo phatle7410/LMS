@@ -27,7 +27,7 @@ export default function ChooseGame() {
       class="w-full h-48 object-cover rounded-lg"
     />
     <p className="text-center mt-2 font-semibold text-lg text-gray-800">
-      Snake
+      flappy
     </p>
   </a>
 </div>
