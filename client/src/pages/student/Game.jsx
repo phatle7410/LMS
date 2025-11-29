@@ -1,14 +1,14 @@
-import React from "react";
+import { useParams } from "react-router-dom";
 
 const Game = () => {
+  const { name } = useParams();
+
   return (
-    <div className="w-full flex justify-center">
-      <iframe
-        src="/game/unity.html"
-        style={{ border: "none", width: "100%", height: "100vh" }}
-        title="Unity WebGL Game"
-      />
-    </div>
+    <iframe
+      src={`/game/${name}/unity.html`}
+      style={{ border: "none", width: "100%", height: "100vh" }}
+      title="Unity WebGL Game"
+    />
   );
 };
 

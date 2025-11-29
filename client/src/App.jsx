@@ -15,6 +15,7 @@ import Navbar from './compoments/student/Navbar'
 import "quill/dist/quill.snow.css";
 import { ToastContainer } from 'react-toastify';
 import Game from './pages/student/Game'
+import ChooseGame from './pages/student/ChooseGame'
 const App = () => {
 
   const isEducatorRoute = useMatch('/educator/*')
@@ -36,7 +37,8 @@ const App = () => {
   <Route path="/loading/:path" element={<Loading />} />
 
   {/* PAGE GAME — đặt ở đây */}
-  <Route path="/game" element={<Game />} />
+  <Route path="/games" element={<ChooseGame />} />
+  <Route path="/game/:name" element={<Game />} />
 
   <Route path="/educator" element={<Educator />}>
     <Route index element={<Dashboard />} />

@@ -56,7 +56,7 @@ const Navbar = () => {
             }
               
         </div>
-        <Link to={'/game'} onClick={()=> scrollTo(0,0)}>
+        <Link to={'/games'} onClick={()=> scrollTo(0,0)}>
                       <button className='px-10 py-3 rounded-md text-white bg-blue-500'>Giải Trí</button>
                       </Link>
         { user ? <UserButton/> :
@@ -72,7 +72,7 @@ const Navbar = () => {
             </>
             }
         </div>
-<Link to="/game">
+<Link to="/games">
       <button className='px-3 py-2 rounded-md text-white bg-blue-500 text-sm'>
         Giải Trí
       </button>
