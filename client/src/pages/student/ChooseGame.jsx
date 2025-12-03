@@ -32,19 +32,7 @@ export default function ChooseGame() {
     </p>
   </a>
 
-  <a
-    href="/game/2048/2048.html"
-    class="p-4 border border-gray-200 rounded-xl shadow-lg transition duration-300 ease-in-out hover:shadow-xl hover:scale-[1.02] block"
-  >
-    <img
-      src="/thumb/2048.png"
-      alt="2048 Thumbnail"
-      class="w-full h-48 object-cover rounded-lg"
-    />
-    <p className="text-center mt-2 font-semibold text-lg text-gray-800">
-      2048
-    </p>
-  </a>
+  
 </div>
 
   );
