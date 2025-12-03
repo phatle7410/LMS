@@ -33,7 +33,7 @@ export default function ChooseGame() {
   </a>
 
   <a
-    href="/game/flappy/2048.html"
+    href="/game/2048/2048.html"
     class="p-4 border border-gray-200 rounded-xl shadow-lg transition duration-300 ease-in-out hover:shadow-xl hover:scale-[1.02] block"
   >
     <img
