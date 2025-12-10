@@ -36,7 +36,7 @@ const App = () => {
   <Route path="/player/:courseId" element={<Player />} />
   <Route path="/loading/:path" element={<Loading />} />
 
-  {/* PAGE GAME — đặt ở đây */}
+  
   <Route path="/games" element={<ChooseGame />} />
   <Route path="/game/:name" element={<Game />} />
 

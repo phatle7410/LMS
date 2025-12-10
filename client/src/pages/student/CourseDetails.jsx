@@ -205,11 +205,11 @@ const CourseDetails = () => {
         <div className='p-5'>
           <p className='md:text-xl text-lg  font-medium text-gray-800'>Trong Bài Học Có Những Gì?</p>
           <ul className='m:-4 pt-2 text-sm md:text-default list-disc text-gray-500'>
-            <li>cali quá non</li>
-            <li>cali quá gà</li>
-            <li>cali quá flop</li>
-            <li>cali quá cali</li>
-            <li>cali quá đáy xã hội</li>
+            <li>Những câu chuyện thú vị</li>
+            <li>Trò chơi và thử thách</li>
+            <li>Video minh họa đẹp mắt</li>
+            <li>Bài học ngắn gọn</li>
+            <li>Rèn luyện cho trẻ</li>
           </ul>
         </div>
       </div>
