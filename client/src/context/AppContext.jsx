@@ -47,7 +47,7 @@ export const AppContextProvider = (props)=>{
     //Fetch User Data
     const fetchUserData = async() =>{
 
-        if(!user.publicMetadata.role === 'educator'){
+        if(user?.publicMetadata?.role === 'educator'){
             setIsEducator(true)
         }
 
@@ -114,23 +114,22 @@ export const AppContextProvider = (props)=>{
     }
 
     // Fetch ng dùng đăng ký
-    const fetchUserEnrolledCourses =async () => {
-        try {
-             const token = await getToken();
-        const {data} = await axios.get(backendUrl + '/api/user/enrolled-courses', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-            if(data.success){
-            setEnrolledCourses(data.enrolledCourses.reverse())
-           }else{
-            toast.error(data.message)
-           }
-        } catch (error) {
-            toast.error(error.message)
+    const fetchUserEnrolledCourses = async () => {
+    try {
+        const token = await getToken();
+        if (!token) return; // Nếu chưa có token thì không gọi API
 
+        const { data } = await axios.get(backendUrl + '/api/user/enrolled-courses', {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+
+        if (data.success && data.enrolledCourses) {
+            setEnrolledCourses(data.enrolledCourses.reverse())
         }
+    } catch (error) {
+        console.error(error.message)
+    }
+
        
     
 }
